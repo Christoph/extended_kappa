@@ -1,3 +1,32 @@
 <template>
-  Start
+  <table>
+    <thead>
+      <tr>
+        <th style="cursor: pointer" click.delegate="setSortProperty('Keyword')">Keyword</th>
+        <th style="cursor: pointer" click.delegate="setSortProperty('KeyVis')">KeyVis</th>
+        <th style="cursor: pointer" click.delegate="setSortProperty('Rec')">Recommendation</th>
+        <th style="cursor: pointer" click.delegate="setSortProperty('Mike')">Mike</th>
+        <th style="cursor: pointer" click.delegate="setSortProperty('MikeRecPosition')">MikeRecPosition</th>
+        <th style="cursor: pointer" click.delegate="setSortProperty('Michael')">Michael</th>
+        <th style="cursor: pointer" click.delegate="setSortProperty('MichaelRecPosition')">MichaelRecPosition</th>
+        <th style="cursor: pointer" click.delegate="setSortProperty('Torsten')">Torsten</th>
+        <th style="cursor: pointer" click.delegate="setSortProperty('TorstenRecPosition')">TorstenRecPosition</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr
+        repeat.for="keyword of data | customSort: { propertyName: sort_property, direction: 'descending' } | filter:searchKeywordsTerm:filterKeywordsFunc"
+        click.delegate="selectKeyword(keyword)">
+        <td>${keyword["Keyword"]}</td>
+        <td>${keyword["KeyVis"]}</td>
+        <td>${keyword["Rec"]}</td>
+        <td>${keyword["Mike"]}</td>
+        <td>${keyword["MikeRecPosition"]}</td>
+        <td>${keyword["Michael"]}</td>
+        <td>${keyword["MichaelRedPosition"]}</td>
+        <td>${keyword["Torsten"]}</td>
+        <td>${keyword["TorstenRecPosition"]}</td>
+      </tr>
+    </tbody>
+  </table>
 </template>

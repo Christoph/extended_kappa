@@ -1,9 +1,15 @@
 export class DataStore {
-  public tool_data;
+  public tool_data = [];
 
   constructor() {
-    this.tool_data = require('../data/tool_results.json')
+    let tool_data = require('../data/tool_results.json')
 
-    console.log(this.tool_data)
+    for (let row in tool_data) {
+      this.tool_data.push(tool_data[row])
+    }
+  }
+
+  getToolData() {
+    return this.tool_data
   }
 }
