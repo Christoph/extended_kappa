@@ -11,6 +11,7 @@ export class compare {
   sort_labels;
   searchKeywordsTerm = ""
   searchLabelsTerm = ""
+  selectedCooc = []
 
   constructor(public store: DataStore) {
     this.data = store.getToolData()
@@ -24,7 +25,7 @@ export class compare {
     this.computeLabelStats()
 
     this.sort_labels = {
-      propertyName: "uncertainty",
+      propertyName: "count",
       direction: "descending"
     }
   }
@@ -42,29 +43,51 @@ export class compare {
     let label_stats = new Map()
 
     for (const keyword of this.data) {
-      let labels = [keyword["KeyVis"], keyword["Mike"], keyword["Michael"], keyword["Torsten"]]
+      let labels = Array.from(new Set([keyword["KeyVis"], keyword["Mike"], keyword["Michael"], keyword["Torsten"]]))
       let overlap = keyword["Overlap"]
 
       for (const label of labels) {
         if (label_stats.has(label)) {
-          label_stats.set(label, label_stats.get(label) + overlap)
+          label_stats.set(label, {
+            overlap: label_stats.get(label).overlap + overlap,
+            count: label_stats.get(label).count + 1,
+            cooc: label_stats.get(label).cooc
+          })
+          label_stats.get(label).cooc.push(...labels.filter(word => word !== label))
         }
         else {
-          label_stats.set(label, overlap)
+          label_stats.set(label, {
+            overlap: overlap,
+            count: 1,
+            cooc: labels.filter(word => word !== label)
+          })
         }
       }
     }
 
     label_stats.forEach((value, label) => {
+      const cooc = new Map(Object.entries(_.countBy(value.cooc)));
+      let cooc_list = []
+
+      cooc.forEach((value, label) => {
+        cooc_list.push({
+          label: label,
+          count: value
+        })
+      })
+
       this.labels.push({
         label: label,
-        uncertainty: value
+        count: value.count,
+        uncertainty: value.overlap / value.count,
+        cooc: cooc_list
       })
     })
   }
 
   selectLabel(label) {
-    this.searchLabelsTerm = label
+    this.searchLabelsTerm = label["label"]
+    this.selectedCooc = label["cooc"]
   }
 
   getAgreementColor(overlap) {

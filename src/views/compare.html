@@ -42,18 +42,38 @@
         <thead>
           <tr>
             <th style="cursor: pointer" click.delegate="setSortProperty('label', 'sort_labels')">Label</th>
+            <th style="cursor: pointer" click.delegate="setSortProperty('count', 'sort_labels')">Count</th>
             <th style="cursor: pointer" click.delegate="setSortProperty('uncertainty', 'sort_labels')">Uncertainty</th>
           </tr>
         </thead>
         <tbody>
           <tr style="cursor: pointer"
             repeat.for="label of labels | customSort: sort_labels | filter:searchLabelsTerm:filterLabelsListFunc"
-            click.delegate="selectLabel(label['label'])">
-            <td>${label["label"]}</td>
+            click.delegate="selectLabel(label)">
+            <td>${label["label"]} </td>
+            <td>${label["count"]}</td>
             <td>${label["uncertainty"]}</td>
           </tr>
         </tbody>
       </table>
+      <div if.bind="searchLabelsTerm">
+        <table>
+          <thead>
+            <tr>
+              <th style="cursor: pointer" click.delegate="setSortProperty('label', 'sort_labels')">Label</th>
+              <th style="cursor: pointer" click.delegate="setSortProperty('count', 'sort_labels')">Count</th>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="cursor: pointer" repeat.for="cooc of selectedCooc | customSort: sort_labels"
+              click.delegate="selectLabel(cooc)">
+              <td>${cooc["label"]} </td>
+              <td>${cooc["count"]}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 </template>
