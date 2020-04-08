@@ -8,7 +8,10 @@ import {
 @autoinject()
 export class compare {
   data;
-  sort_property = "Keyword"
+  sort_property = {
+    propertyName: "Keyword",
+    direction: "ascending"
+  }
   search_keywords_term = ""
 
   constructor(public store: DataStore) {
@@ -16,8 +19,18 @@ export class compare {
   }
 
   setSortProperty(prop) {
-    this.sort_property = ""
-    this.sort_property = prop
+    let direction = this.sort_property.direction
+    if (direction == "ascending") {
+      direction = "descending";
+    }
+    else {
+      direction = "ascending";
+    }
+
+    this.sort_property = {
+      propertyName: prop,
+      direction: direction
+    }
   }
 
   filterKeywordsFunc(searchExpression, value) {
