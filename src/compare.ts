@@ -11,6 +11,7 @@ export class compare {
   properties = []
   sort_property;
   search_keywords_term = ""
+  search_labels_term = ""
 
   constructor(public store: DataStore) {
     this.data = store.getToolData()
@@ -57,6 +58,13 @@ export class compare {
 
   filterKeywordsFunc(searchExpression, value) {
     let itemValue = value["Keyword"];
+    if (!searchExpression || !itemValue) return false;
+
+    return itemValue.toUpperCase().indexOf(searchExpression.toUpperCase()) !== -1;
+  }
+
+  filterLabelsFunc(searchExpression, value) {
+    let itemValue = [value["KeyVis"], value["Mike"], value["Michael"], value["Torsten"]].join(" ");
     if (!searchExpression || !itemValue) return false;
 
     return itemValue.toUpperCase().indexOf(searchExpression.toUpperCase()) !== -1;
