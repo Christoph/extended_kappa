@@ -1,0 +1,28 @@
+<template>
+  <table>
+    <thead>
+      <tr>
+        <th repeat.for="property of properties" style="cursor: pointer" click.delegate="setSortProperty(property)">
+          ${property}</th>
+        <!-- <th style="cursor: pointer" click.delegate="setSortProperty('Keyword')">Keyword</th>
+            <th style="cursor: pointer" click.delegate="setSortProperty('KeyVis')">KeyVis</th>
+            <th style="cursor: pointer" click.delegate="setSortProperty('Mike')">Mike</th>
+            <th style="cursor: pointer" click.delegate="setSortProperty('Michael')">Michael</th>
+            <th style="cursor: pointer" click.delegate="setSortProperty('Torsten')">Torsten</th> -->
+      </tr>
+    </thead>
+    <tbody>
+      <tr
+        repeat.for="keyword of data | customSort: sort_property | filter:searchKeywordsTerm:filterKeywordsFunc | filter:searchLabelsTerm:filterLabelsFunc"
+        click.delegate="selectKeyword(keyword)" css="background-color: ${getAgreementColor(keyword['Overlap'])}">
+        <td repeat.for="property of properties">${keyword[property]}</td>
+        <!-- <td>${keyword["Keyword"]}</td>
+            <td>${keyword["KeyVis"]}</td>
+            <td>${keyword["Mike"]}</td>
+            <td>${keyword["Michael"]}</td>
+            <td>${keyword["Torsten"]}</td> -->
+      </tr>
+    </tbody>
+  </table>
+
+</template>
