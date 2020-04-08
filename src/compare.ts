@@ -8,14 +8,17 @@ import {
 @autoinject()
 export class compare {
   data;
-  sort_property = {
-    propertyName: "Keyword",
-    direction: "ascending"
-  }
+  properties = []
+  sort_property;
   search_keywords_term = ""
 
   constructor(public store: DataStore) {
     this.data = store.getToolData();
+    this.properties = Object.getOwnPropertyNames(this.data[0])
+    this.sort_property = {
+      propertyName: this.properties[0],
+      direction: "ascending"
+    }
   }
 
   setSortProperty(prop) {
