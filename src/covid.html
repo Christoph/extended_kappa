@@ -1,0 +1,286 @@
+<template>
+  <!-- Cases:
+  <span repeat.for="i of cases">
+    <i class="fas fa-male"></i>
+  </span>
+  <br>
+  Critical: <i class="fas fa-procedures"></i>
+  <br>
+  Quarantined: <i class="fal fa-door-closed"></i>
+  <br>
+  Infections through Work: <i class="fad fa-briefcase"></i>
+  <br>
+  Infections through Family:
+  <br>
+  Infections through Random: <i class=" fad fa-dice"></i>
+  <br> -->
+  <!--
+  <h1>IDEA 1 - How likely is your family affected</h1>
+  Reduction of Social Contacts by ${rangeValue}%
+  <md-range value.bind="rangeValue" min="10" max="75" step="5" change.delegate="onChange($event)"></md-range>
+
+  Probability of one Infection within your Family: <i class="fas fa-female"></i><i class="fas fa-male"></i><i
+    class="fas fa-child" data-fa-transform="shrink-4 down-2"></i><i class="fas fa-child"
+    data-fa-transform="shrink-4 down-2 left-2"></i>
+  and Closest Friends <i class="fas fa-male"></i><i class="fas fa-female"></i><i class="fas fa-female"></i><i
+    class="fas fa-male"></i><i class="fas fa-female"></i>
+  : ${compute_Risk(activeSim.Mai_infected)}%
+  <br> -->
+  <div class="header">
+    <div class="row" style="margin: 0px; height: 55px">
+      <span class="title">Gesundheitsversorgung und
+        Social Distancing <i class="fas fa-info-circle" md-tooltip="position: bottom; html.bind: aboutTooltip;"></i>
+      </span>
+      <div if.bind="false" style="float: right">
+        <md-radio name="myOption" value="equal" checked.bind="mode">Equal</md-radio>
+        <br>
+        <md-radio name="myOption" value="context" checked.bind="mode">Context</md-radio>
+      </div>
+      <div style="float: right; font-size: smaller; margin-right: 5px">
+        <span style="color: Tomato">
+          <i class="fas fa-coffin-cross"></i> ${death_factor} Potentielle Tote
+        </span>
+        <br>
+        <i class="fas fa-procedures"></i> ${hospital_factor} Intensivbetten (
+        <span style="color: Tomato">
+          <i class="fas fa-procedures"></i> fehlend,
+        </span>
+        <span style="color: BLack">
+          <i class="fad fa-procedures"
+            style="--fa-secondary-opacity: 1.0; --fa-primary-color: Black; --fa-secondary-color: Tomato;"></i> belegt,
+        </span>
+        <span>
+          <i class="fad fa-procedures"
+            style="--fa-secondary-opacity: 0; --fa-primary-color: Black; --fa-secondary-color: Tomato;"></i> frei
+        </span>)
+        <br>
+        <span>
+          <i class="fal fa-male"></i> ${person_factor} Menschen (
+        </span>
+        <span style="color: Tomato">
+          <i class="fas fa-male"></i> kritisch
+        </span>
+        <span style="color: Orange">
+          <i class="fas fa-male"></i> infiziert
+        </span>
+        <span style="color: Green">
+          <i class="fas fa-male"></i> erholt
+        </span>)
+        <br if.bind="show_comparison">
+        <span if.bind="show_comparison" style="color: hsla(9, 100%, 64%, 0.200)">
+          <i class="fas fa-male"> </i> <i class="fas fa-procedures"> </i> <i class="fas fa-coffin-cross"> </i>
+          Transparent
+          ist die
+          Anzahl ohne Reduktion
+        </span>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col s3" style="font-size: smaller;">
+        Diese Visualisierung soll zeigen wie sich <span style="font-weight: 800">social distancing</span> auf die
+        Verbreitung von Corona innerhalb
+        Österreichs auswirkt. Zusätzlich kann die Auslastung des Österreichischen Gesundheitssystems betrachtet werden.
+        Die Zahlen beziehen sich auf Wien.
+      </div>
+      <div class="col s3" style="margin-top: 20px; margin-bottom: 20px;">
+        <span style="display: inline-block;">
+          Reduktion der sozialen Kontakte:
+        </span>
+        <br>
+        <!-- <md-radio repeat.for="[reduction, data] of sim" name="reduction" model.bind="data" checked.bind="activeSim">
+          ${reductionToText(reduction)} </md-radio>
+        <br> -->
+        <md-radio name="Option" value="10" checked.bind="reduction"
+          md-tooltip="position: bottom; html: Keine Reduktion der Sozialen Kontakte;">Keine</md-radio>
+        <md-radio name="Option" value="20" checked.bind="reduction"
+          md-tooltip="position: bottom; html.bind: leichtTooltip;">Leicht</md-radio>
+        <md-radio name="Option" value="30" checked.bind="reduction"
+          md-tooltip="position: bottom; html.bind: mittelTooltip;">Mittel</md-radio>
+        <md-radio name="Option" value="40" checked.bind="reduction"
+          md-tooltip="position: bottom; html.bind: starkTooltip;">Stark</md-radio>
+        <br>
+        <md-switch label-on="relative" label-off="absolute" checked.bind="show_comparison"></md-switch>
+      </div>
+      <div class="col s6" style="margin: 0px">
+        <div class="row" style="margin: 0px; height: 45px">
+          <div style="display: inline-block; font-size:smaller">
+            Anzahl der verfügbaren <br> Intensivbetten:
+          </div>
+          <div style="display: inline-block; width: 100px">
+            <md-input value.bind="available_beds" disabled.bind="disabledValue" inline="true" type="number">
+            </md-input>
+          </div>
+          <div style="display: inline-block; height: 50px">
+            <md-range value.bind="available_beds" min="0" max="10000" step="1" change.delegate="onChangeBeds($event)">
+            </md-range>
+          </div>
+          <div style="display: inline-block; font-size: smaller; color: grey">
+            2547 Intensivbetten in Österreich
+            <br>
+            696 Intensivbetten in Wien
+          </div>
+        </div>
+        <div class="row" style="margin: 0px; height: 40px">
+          <div style="display: inline-block; font-size: smaller">
+            Sterberate von Infizierten (Prozent):
+          </div>
+          <div style="display: inline-block">
+            <div>
+              <md-input type="number" step="0.1" min="0" max="100" validate="true" validate-error="invalid number"
+                value.bind="death_rate" change.delegate="onChangeBeds($event)"></md-input>
+            </div>
+          </div>
+          <span style="color: grey; font-size: smaller">
+            2.6% ist die Sterberate des Ausbruchs in China.
+          </span>
+        </div>
+      </div>
+    </div>
+    <!-- <hr> -->
+  </div>
+
+  <div class="content">
+    <div class="row">
+      <div class="col s12">
+        <div class="row" repeat.for="[month, data] of activeSim">
+          <div class="col s1">
+            <span style="font-size: x-large; font-weight: 800;">${month}</span>
+          </div>
+          <div class="col s3">
+            <span class="icon-hover">
+              <span repeat.for="i of computeFreeBeds(month, activeSim)">
+                <i class="fad fa-procedures"
+                  style="--fa-secondary-opacity: 0; --fa-primary-color: Black; --fa-secondary-color: Tomato;"></i>
+              </span>
+              <span if.bind="show_comparison" repeat.for="i of computeBaseFreeBeds(month, baseSim, activeSim)"
+                style="color: rgba(0, 0, 0, 0.200)">
+                <i class="fad fa-procedures"
+                  style="--fa-secondary-opacity: 0; --fa-primary-color: Black; --fa-secondary-color: Tomato;"></i>
+              </span>
+            </span>
+            <span class="icon-text">
+              <span style="color: Black">
+                ${computeFreeBedsNumber(month, activeSim)},
+              </span>
+              <span style="color: rgba(0, 0, 0, 0.200)">
+                ${computeBaseFreeBedsNumber(month, baseSim, activeSim)}
+              </span>
+            </span>
+            <br if.bind="computeFreeBeds(month, activeSim)">
+            <span class="icon-hover">
+              <span repeat.for="i of computeUsedBeds(month, activeSim)" style="color: Black">
+                <i class="fad fa-procedures"
+                  style="--fa-secondary-opacity: 1.0; --fa-primary-color: Black; --fa-secondary-color: Tomato;"></i>
+              </span>
+              <span if.bind="show_comparison" repeat.for="i of computeBaseUsedBeds(month, baseSim, activeSim)"
+                style="color: Black">
+                <i class="fad fa-procedures" style="--fa-primary-opacity: 0.2; --fa-secondary-opacity: 0.2; --fa-primary-color: Black;
+                --fa-secondary-color: Tomato;"></i>
+              </span>
+            </span>
+            <span class="icon-text">
+              <span style="color: Black">
+                ${computeUsedBedsNumber(month, activeSim)},
+              </span>
+              <span style="color: rgba(0, 0, 0, 0.200)">
+                ${computeBaseUsedBedsNumber(month, baseSim, activeSim)}
+              </span>
+            </span>
+            <br>
+            <span class="icon-hover">
+              <span repeat.for="i of computeMissingBeds(month, activeSim)"
+                style="color: Tomato; vertical-align: bottom">
+                <i class="fas fa-procedures"></i>
+              </span>
+              <span if.bind="show_comparison" repeat.for="i of computeBaseMissingBeds(month, baseSim, activeSim)"
+                style="color: rgba(255, 99, 71, 0.200)">
+                <i class="fas fa-procedures"></i>
+              </span>
+            </span>
+            <span class="icon-text">
+              <span style="color: Tomato">
+                ${computeMissingBedsNumber(month, activeSim)},
+              </span>
+              <span style="color: rgba(255, 99, 71, 0.200)">
+                ${computeBaseMissingBedsNumber(month, baseSim, activeSim)}
+              </span>
+            </span>
+          </div>
+          <div class="col s8">
+            <span class="icon-hover">
+              <span repeat.for="i of computeDeathRate(month, activeSim)" style="color: Tomato">
+                <i class="fas fa-coffin-cross"></i>
+              </span>
+              <span if.bind="show_comparison" repeat.for="i of computeBaseDeathRate(month, baseSim, activeSim)"
+                style="color: hsla(9, 100%, 64%, 0.200)">
+                <i class="fas fa-coffin-cross"></i>
+              </span>
+            </span>
+            <span class="icon-text">
+              <span style="color: tomato">
+                ${computeDeathRateNumber(month, activeSim)},
+              </span>
+              <span style="color: hsla(9, 100%, 64%, 0.200)">
+                ${computeBaseDeathRateNumber(month, baseSim, activeSim)}
+              </span>
+            </span>
+            <br>
+            <span class="icon-hover">
+              <span repeat.for="i of computeCritical(month, activeSim)" style="color: Tomato">
+                <i class="fas fa-male"></i>
+              </span>
+              <span if.bind="show_comparison" repeat.for="i of computeBaseCritical(month, baseSim, activeSim)"
+                style="color: hsla(9, 100%, 64%, 0.200)">
+                <i class="fas fa-male"></i>
+              </span>
+            </span>
+            <span class="icon-text">
+              <span style="color: tomato">
+                ${computeCriticalNumber(month, activeSim)},
+              </span>
+              <span style="color: hsla(9, 100%, 64%, 0.200)">
+                ${computeBaseCriticalNumber(month, baseSim, activeSim)}
+              </span>
+            </span>
+            <br>
+            <span class="icon-hover">
+              <span repeat.for="i of computeInfected(month, activeSim)" style="color: Orange">
+                <i class="fas fa-male"></i>
+              </span>
+              <span if.bind="show_comparison" repeat.for="i of computeBaseInfected(month, baseSim, activeSim)"
+                style="color: rgba(255, 166, 0, 0.200)">
+                <i class="fas fa-male"></i>
+              </span>
+            </span>
+            <span class="icon-text">
+              <span style="color: Orange">
+                ${computeInfectedNumber(month, activeSim)},
+              </span>
+              <span style="color: rgba(255, 166, 0, 0.200)">
+                ${computeBaseInfectedNumber(month, baseSim, activeSim)}
+              </span>
+            </span>
+            <br>
+            <span class="icon-hover">
+              <span repeat.for="i of computeRecovered(month, activeSim)" style="color: Green">
+                <i class="fas fa-male"></i>
+              </span>
+              <span if.bind="show_comparison" repeat.for="i of computeBaseRecovered(month, baseSim, activeSim)"
+                style="color: rgba(0, 128, 0, 0.200)">
+                <i class="fas fa-male"></i>
+              </span>
+            </span>
+            <span class="icon-text">
+              <span style="color: Green">
+                ${computeRecoveredNumber(month, activeSim)},
+              </span>
+              <span style="color: rgba(0, 128, 0, 0.200)">
+                ${computeBaseRecoveredNumber(month, baseSim, activeSim)}
+              </span>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
