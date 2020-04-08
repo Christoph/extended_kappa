@@ -5,14 +5,15 @@
       value.bind="searchKeywordsTerm" placeholder="search Keywords..."></input>
     <input type="text" class="form-control search-box" style="display: inline-block; width: 25%;"
       value.bind="searchLabelsTerm" placeholder="search Labels..."></input>
-    <button md-button click.delegate="setSortProperty('Overlap')">Sort by Author Agreement</button>
+    <button md-button click.delegate="setSortProperty('Overlap', 'sort_keywords')">Sort by Author Agreement</button>
   </div>
   <div class="row">
     <div class="col m8">
       <table>
         <thead>
           <tr>
-            <th repeat.for="property of properties" style="cursor: pointer" click.delegate="setSortProperty(property)">
+            <th repeat.for="property of properties" style="cursor: pointer"
+              click.delegate="setSortProperty(property, 'sort_keywords')">
               ${property}</th>
             <!-- <th style="cursor: pointer" click.delegate="setSortProperty('Keyword')">Keyword</th>
             <th style="cursor: pointer" click.delegate="setSortProperty('KeyVis')">KeyVis</th>
@@ -23,7 +24,7 @@
         </thead>
         <tbody>
           <tr
-            repeat.for="keyword of data | customSort: sort_property | filter:searchKeywordsTerm:filterKeywordsFunc | filter:searchLabelsTerm:filterLabelsFunc"
+            repeat.for="keyword of data | customSort: sort_keywords | filter:searchKeywordsTerm:filterKeywordsFunc | filter:searchLabelsTerm:filterLabelsFunc"
             click.delegate="selectKeyword(keyword)" css="background-color: ${getAgreementColor(keyword['Overlap'])}">
             <td repeat.for="property of properties">${keyword[property]}</td>
             <!-- <td>${keyword["Keyword"]}</td>
@@ -36,7 +37,22 @@
       </table>
     </div>
     <div class="col m4">
-
+      <table>
+        <thead>
+          <tr>
+            <th style="cursor: pointer" click.delegate="setSortProperty('label', 'sort_labels')">Label</th>
+            <th style="cursor: pointer" click.delegate="setSortProperty('uncertainty', 'sort_labels')">Uncertainty</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="cursor: pointer"
+            repeat.for="label of labels | customSort: sort_labels | filter:searchLabelsTerm:filterLabelsListFunc"
+            click.delegate="selectLabel(label['label'])">
+            <td>${label["label"]}</td>
+            <td>${label["uncertainty"]}</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </div>
 </template>
