@@ -13,7 +13,7 @@ export class compare {
   search_keywords_term = ""
 
   constructor(public store: DataStore) {
-    this.data = store.getToolData();
+    this.data = store.getManualData();
     this.properties = Object.getOwnPropertyNames(this.data[0])
     this.sort_property = {
       propertyName: this.properties[0],
