@@ -3,6 +3,7 @@
     <i class="fad fa-search fa-2x" style="display: inline-block;vertical-align: middle;"></i>
     <input type="text" class="form-control search-box" style="display: inline-block; width: 50%;"
       value.bind="searchKeywordsTerm" placeholder="search Keywords..."></input>
+    <button md-button click.delegate="setSortProperty('Overlap')">Sort by Author Agreement</button>
   </div>
   <table>
     <thead>
@@ -22,7 +23,7 @@
     </thead>
     <tbody>
       <tr repeat.for="keyword of data | customSort: sort_property | filter:searchKeywordsTerm:filterKeywordsFunc"
-        click.delegate="selectKeyword(keyword)">
+        click.delegate="selectKeyword(keyword)" css="background-color: ${getAgreementColor(keyword['Overlap'])}">
         <td repeat.for="property of properties">${keyword[property]}</td>
         <!-- <td>${keyword["Keyword"]}</td>
         <td>${keyword["KeyVis"]}</td>

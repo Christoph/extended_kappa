@@ -13,12 +13,31 @@ export class compare {
   search_keywords_term = ""
 
   constructor(public store: DataStore) {
-    this.data = store.getManualData();
+    this.data = store.getToolData()
     this.properties = Object.getOwnPropertyNames(this.data[0])
     this.sort_property = {
       propertyName: this.properties[0],
       direction: "ascending"
     }
+
+    this.computeDerivedValues()
+  }
+
+  computeDerivedValues() {
+    // Coder Overlap
+    for (const row of this.data) {
+      let overlap = new Set([row["KeyVis"], row["Mike"], row["Michael"], row["Torsten"]]).size
+
+      row["Overlap"] = overlap
+    }
+  }
+
+  getAgreementColor(overlap) {
+    console.log(overlap)
+    if (overlap == 4) return "Tomato";
+    else if (overlap == 3) return "Orange";
+    else if (overlap == 2) return "Green";
+    else return "Steelblue";
   }
 
   setSortProperty(prop) {
