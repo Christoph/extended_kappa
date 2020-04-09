@@ -8,6 +8,11 @@
     <i class="far fa-trash fa-2x" style="display: inline-block;vertical-align: middle; cursor: pointer"
       click.delegate="resetSearch()"></i>
     <button md-button click.delegate="setSortProperty('Overlap', 'sort_keywords')">Sort by Author Agreement</button>
+    <a md-button md-dropdown="activates: dropdown1;">Dataset: ${selectedDataset}</a>
+    <ul id="dropdown1">
+      <li><a click.trigger="setDataset('tool')">Tool Dataset</a></li>
+      <li><a click.trigger="setDataset('manual')">Manual Dataset</a></li>
+    </ul>
   </div>
   <div class="row">
     <div class="col m8">

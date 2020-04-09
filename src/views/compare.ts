@@ -5,6 +5,7 @@ import * as _ from "lodash";
 @autoinject()
 export class compare {
   data;
+  selectedDataset;
   properties = [];
   labels = [];
   sort_keywords;
@@ -15,6 +16,8 @@ export class compare {
 
   constructor(public store: DataStore) {
     this.data = store.getToolData()
+    this.selectedDataset = "Tool"
+
     this.properties = Object.getOwnPropertyNames(this.data[0])
     this.sort_keywords = {
       propertyName: this.properties[0],
@@ -41,6 +44,7 @@ export class compare {
 
   computeLabelStats() {
     let label_stats = new Map()
+    this.labels.length = 0;
 
     for (const keyword of this.data) {
       let labels = Array.from(new Set([keyword["KeyVis"], keyword["Mike"], keyword["Michael"], keyword["Torsten"]]))
@@ -88,6 +92,20 @@ export class compare {
   selectLabel(label) {
     this.searchLabelsTerm = label["label"]
     this.selectedCooc = label["cooc"]
+  }
+
+  setDataset(dataset) {
+    if (dataset == "tool") {
+      this.data = this.store.getToolData()
+      this.selectedDataset = "Tool"
+    }
+    else {
+      this.data = this.store.getManualData()
+      this.selectedDataset = "Manual"
+    }
+
+    this.computeDerivedValues()
+    this.computeLabelStats()
   }
 
   getAgreementColor(overlap) {

@@ -104,6 +104,6 @@ dist
 .tern-port
 
 # custom
-data/
+data/*.csv
 .DS_Store
 settings.json
