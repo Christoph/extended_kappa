@@ -98,10 +98,15 @@ export class compare {
   }
 
   getHighlight(label) {
-    if (this.searchLabelsTerm && this.searchLabelsTerm.toUpperCase().indexOf(label.toUpperCase())) {
-      return 0.25
+    if (this.searchLabelsTerm) {
+      if (this.searchLabelsTerm.toUpperCase().indexOf(label.toUpperCase())) {
+        return 0.25;
+      }
+      else {
+        return 1;
+      }
     }
-    else return 1
+    return 1
   }
 
   setSortProperty(prop, sort_object_name) {
