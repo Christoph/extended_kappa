@@ -5,6 +5,8 @@
       value.bind="searchKeywordsTerm" placeholder="search Keywords..."></input>
     <input type="text" class="form-control search-box" style="display: inline-block; width: 25%;"
       value.bind="searchLabelsTerm" placeholder="search Labels..."></input>
+    <i class="far fa-trash fa-2x" style="display: inline-block;vertical-align: middle; cursor: pointer"
+      click.delegate="resetSearch()"></i>
     <button md-button click.delegate="setSortProperty('Overlap', 'sort_keywords')">Sort by Author Agreement</button>
   </div>
   <div class="row">

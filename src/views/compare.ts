@@ -119,6 +119,10 @@ export class compare {
     }
   }
 
+  resetSearch() {
+    this.searchLabelsTerm = "";
+  }
+
   filterKeywordsFunc(searchExpression, value) {
     let itemValue = value["Keyword"];
     if (!searchExpression || !itemValue) return false;
