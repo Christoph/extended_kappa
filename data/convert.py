@@ -7,24 +7,12 @@ def normalizeString(text):
     return re.sub(r" +", " ", temp)
 
 
+# Tool Data
 def updateRow(series):
     temp = []
     for index, value in series.items():
         if index == "Keyword":
             temp.append(value)
-        else:
-            temp.append(normalizeString(value))
-    return pd.Series(temp)
-
-
-def updateRowManual(series):
-    temp = []
-    for index, value in series.items():
-        if index == "Keyword":
-            temp.append(value)
-        elif index == "Mike":
-            temp.append(normalizeString(
-                " ".join(re.findall('[a-zA-Z][^A-Z]*', value))))
         else:
             temp.append(normalizeString(value))
     return pd.Series(temp)
@@ -39,6 +27,24 @@ data = data.apply(updateRow, axis=1)
 data.columns = columns
 
 data.to_json("tool_results.json", orient="index")
+
+# Manual Data
+
+
+def updateRowManual(series):
+    temp = []
+    for index, value in series.items():
+        if index == "Keyword":
+            temp.append(value)
+        else:
+            if " " in value:
+                temp.append(normalizeString(value))
+            else:
+                splitted = " ".join(re.findall('[a-zA-Z][^A-Z]*', value))
+                temp.append(normalizeString(splitted))
+
+    return pd.Series(temp)
+
 
 man = pd.read_csv("manual_results.csv")
 man = man.drop(["Rec", "Keyword_Processed"], axis=1)
