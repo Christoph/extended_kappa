@@ -1,6 +1,7 @@
 import { autoinject } from 'aurelia-dependency-injection';
 import { DataStore } from 'data-store';
 import * as _ from "lodash";
+import { max } from 'd3';
 
 @autoinject()
 export class compare {
@@ -87,6 +88,10 @@ export class compare {
         cooc: cooc_list
       })
     })
+
+    for (const label of this.labels) {
+      label.uncertainty = label.uncertainty / max(this.labels, d => d.uncertainty)
+    }
   }
 
   selectLabel(label) {
