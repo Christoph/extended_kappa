@@ -109,10 +109,10 @@ export class compare {
   }
 
   getAgreementColor(overlap) {
-    if (overlap == 4) return "Tomato";
-    else if (overlap == 3) return "Orange";
-    else if (overlap == 2) return "Green";
-    else return "Steelblue";
+    if (overlap == 4) return "rgba(255, 99, 71, 0.401)";
+    // else if (overlap == 3) return "Orange";
+    // else if (overlap == 2) return "Green";
+    if (overlap == 1) return "rgba(0, 128, 0, 0.406)";
   }
 
   getHighlight(label) {
