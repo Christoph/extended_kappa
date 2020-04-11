@@ -21,7 +21,7 @@ const when = (condition, config, negativeConfig) =>
   condition ? ensureArray(config) : ensureArray(negativeConfig);
 
 // primary config:
-const title = 'Covid Explorer';
+const title = 'Extended Kappa';
 const outDir = path.resolve(__dirname, project.platform.output);
 const srcDir = path.resolve(__dirname, 'src');
 const nodeModulesDir = path.resolve(__dirname, 'node_modules');
