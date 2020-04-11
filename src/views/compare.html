@@ -24,6 +24,7 @@
             <th repeat.for="property of properties" style="cursor: pointer"
               click.delegate="setSortProperty(property, 'sort_keywords')">
               ${property}</th>
+            <!-- <th>Histogram</th> -->
             <!-- <th style="cursor: pointer" click.delegate="setSortProperty('Keyword')">Keyword</th>
             <th style="cursor: pointer" click.delegate="setSortProperty('KeyVis')">KeyVis</th>
             <th style="cursor: pointer" click.delegate="setSortProperty('Mike')">Mike</th>
@@ -37,6 +38,8 @@
             click.delegate="selectKeyword(keyword)" css="background-color: ${getAgreementColor(keyword['Overlap'])}">
             <td css="opacity: ${getHighlight(keyword[property])}" repeat.for="property of properties">
               ${keyword[property]}</td>
+            <!-- <td as-element="small-histogram" data.bind="test" property="a" xSize="80" ySize="60">
+            </td> -->
             <!-- <td>${keyword["Keyword"]}</td>
             <td>${keyword["KeyVis"]}</td>
             <td>${keyword["Mike"]}</td>

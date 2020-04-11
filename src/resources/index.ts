@@ -7,6 +7,7 @@ export function configure(config: FrameworkConfiguration) {
     PLATFORM.moduleName("./elements/graph-plot"),
     PLATFORM.moduleName("./elements/bar-chart"),
     PLATFORM.moduleName("./elements/small-bar"),
+    PLATFORM.moduleName("./elements/small-histogram"),
     PLATFORM.moduleName("./converters/number-format"),
     PLATFORM.moduleName("./converters/custom-sort"),
     PLATFORM.moduleName("./converters/custom-sort-length"),
