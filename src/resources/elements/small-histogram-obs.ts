@@ -50,8 +50,6 @@ export class SmallHistogramObsCustomElement {
 
   dataChanged(data) {
     if (this.isInitialized) {
-      this.svg.selectAll("rect").remove()
-      this.svg.selectAll("text").remove()
       this.updateChart();
     }
   }
@@ -96,7 +94,7 @@ export class SmallHistogramObsCustomElement {
     this.y.domain([0, d3.max(bins, function (d) { return d.length; })]);
 
     // Join the rect with the bins data
-    var chart = this.svg.selectAll("rect")
+    let chart = this.svg.selectAll("rect")
       .data(bins)
 
     chart.enter()
@@ -107,15 +105,21 @@ export class SmallHistogramObsCustomElement {
       .attr("width", function (d) { return self.x(d.x1) - self.x(d.x0) - 1; })
       .attr("height", function (d) { return self.height - self.y(d.length); })
 
-    chart.enter()
+    chart.exit()
+      .remove()
+
+    let texts = this.svg.selectAll(".bar-text")
+      .data(bins)
+
+    texts.enter()
       .append("text")
-      .merge(chart)
+      .merge(texts)
       .attr("class", "bar-text")
       .attr("x", d => this.x(d.x0))
       .attr("y", d => this.y(d.length))
       .text(d => d.length)
 
-    chart.exit()
+    texts.exit()
       .remove()
 
     this.svg.selectAll(".xAxis")

@@ -53,8 +53,6 @@ export class SmallBarsObsCustomElement {
 
   dataChanged(data) {
     if (this.isInitialized) {
-      this.svg.selectAll("rect").remove()
-      this.svg.selectAll("text").remove()
       this.updateChart();
     }
   }
@@ -108,7 +106,7 @@ export class SmallBarsObsCustomElement {
     chart.exit()
       .remove()
 
-    let texts = this.svg.selectAll("texts")
+    let texts = this.svg.selectAll(".bar-text")
       .data(bins)
 
     texts.enter().append("text")
@@ -120,7 +118,6 @@ export class SmallBarsObsCustomElement {
 
     texts.exit()
       .remove()
-
 
     this.svg.selectAll(".xAxis")
       .call(d3.axisBottom(self.x).ticks(this.bins));
