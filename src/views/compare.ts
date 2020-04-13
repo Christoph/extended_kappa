@@ -16,15 +16,6 @@ export class compare {
   searchLabelsTerm = ""
   selectedCooc = []
 
-  test = [
-    { a: 1, b: 2 },
-    { a: 1, b: 2 },
-    { a: 2, b: 2 },
-    { a: 3, b: 3 },
-    { a: 4, b: 3 },
-    { a: 4, b: 3 },
-  ]
-
   constructor(public store: DataStore) {
     this.data = store.getToolData()
     this.selectedDataset = "Tool"

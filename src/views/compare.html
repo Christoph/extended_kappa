@@ -24,7 +24,6 @@
             <th repeat.for="property of properties" style="cursor: pointer"
               click.delegate="setKeywordSortProperty(property)">
               ${property}</th>
-            <!-- <th>Histogram</th> -->
             <!-- <th style="cursor: pointer" click.delegate="setSortProperty('Keyword')">Keyword</th>
             <th style="cursor: pointer" click.delegate="setSortProperty('KeyVis')">KeyVis</th>
             <th style="cursor: pointer" click.delegate="setSortProperty('Mike')">Mike</th>
@@ -38,8 +37,6 @@
             click.delegate="selectKeyword(keyword)" css="background-color: ${getAgreementColor(keyword['Overlap'])}">
             <td css="opacity: ${getHighlight(keyword[property])}" repeat.for="property of properties">
               ${keyword[property]}</td>
-            <!-- <td as-element="small-histogram" data.bind="test" property="a" xSize="80" ySize="60">
-            </td> -->
             <!-- <td>${keyword["Keyword"]}</td>
             <td>${keyword["KeyVis"]}</td>
             <td>${keyword["Mike"]}</td>
@@ -55,10 +52,21 @@
           <tr>
             <th style="cursor: pointer" click.delegate="setLabelSortProperty('label')">Label</th>
             <th style="cursor: pointer" click.delegate="setLabelSortProperty('count')">Count</th>
-            <th style="cursor: pointer" click.delegate="setLabelSortProperty('uncertainty')">Uncertainty</th>
+            <th style="cursor: pointer" click.delegate="setLabelSortProperty('uncertainty')">Uncertainty
+            </th>
           </tr>
         </thead>
         <tbody>
+          <tr>
+            <td>
+              ${labels.length} Labels
+            </td>
+            <td as-element="small-bars-obs" data.bind="labels" property="count" xSize="100" ySize="60">
+            </td>
+            <td as-element="small-histogram-obs" data.bind="labels" property="uncertainty" bins="5" xSize="100"
+              ySize="60">
+            </td>
+          </tr>
           <tr style="cursor: pointer"
             repeat.for="label of labels | filter:searchLabelsTerm:filterLabelsListFunc | customSort: sort_labels"
             click.delegate="selectLabel(label)">
@@ -78,6 +86,13 @@
             </tr>
           </thead>
           <tbody>
+            <tr>
+              <td>
+                ${selectedCooc.length} Co-occuring Labels
+              </td>
+              <td as-element="small-bars-obs" data.bind="selectedCooc" property="count" xSize="100" ySize="60">
+              </td>
+            </tr>
             <tr style="cursor: pointer" repeat.for="cooc of selectedCooc | customSort: sort_cooc"
               click.delegate="selectCooc(cooc)">
               <td>${cooc["label"]} </td>

@@ -1,10 +1,10 @@
 import * as d3 from "d3";
-import { inject, noView, bindable } from 'aurelia-framework';
+import { inject, noView, bindable, BindingEngine } from 'aurelia-framework';
 import * as _ from "lodash"
 
-@inject(Element)
+@inject(Element, BindingEngine)
 @noView()
-export class SmallHistogramCustomElement {
+export class SmallHistogramObsCustomElement {
   // D3 variables
   private svg;
   private histogram;
@@ -25,10 +25,17 @@ export class SmallHistogramCustomElement {
   height: number;
   width: number;
 
-  constructor(public element: Element) {
+  constructor(public element: Element, private bindingEngine) {
   }
 
   attached() {
+    if (this.data) {
+      // subscribe to the data array and watch for changes
+      this.subscription = this.bindingEngine
+        .collectionObserver(this.data)
+        .subscribe(splices => this.dataChanged(splices));
+    }
+
     this.width = parseInt(this.xsize) - this.margin.left - this.margin.right;
     this.height = parseInt(this.ysize) - this.margin.top - this.margin.bottom;
 
@@ -37,9 +44,14 @@ export class SmallHistogramCustomElement {
     this.updateChart();
   }
 
+  unbind() {
+    this.subscription.dispose();
+  }
+
   dataChanged(data) {
-    console.log("changed")
     if (this.isInitialized) {
+      this.svg.selectAll("rect").remove()
+      this.svg.selectAll("text").remove()
       this.updateChart();
     }
   }
@@ -52,6 +64,10 @@ export class SmallHistogramCustomElement {
       .append("g")
       .attr("transform",
         "translate(" + this.margin.left + "," + this.margin.top + ")");
+
+    this.svg.append("g")
+      .attr("class", "xAxis")
+      .attr("transform", "translate(0, " + this.height + ")")
 
     // set the ranges
     this.x = d3.scaleLinear()
@@ -102,8 +118,7 @@ export class SmallHistogramCustomElement {
     chart.exit()
       .remove()
 
-    this.svg.append("g")
-      .attr("transform", "translate(0, " + this.height + ")")
+    this.svg.selectAll(".xAxis")
       .call(d3.axisBottom(self.x).ticks(this.bins));
   }
 }
