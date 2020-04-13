@@ -4,10 +4,9 @@ import * as _ from "lodash"
 
 @inject(Element)
 @noView()
-export class SmallHistogramCustomElement {
+export class SmallBarsCustomElement {
   // D3 variables
   private svg;
-  private histogram;
   private y: d3.ScaleLinear<number, number>;
   private x;
 
@@ -37,8 +36,10 @@ export class SmallHistogramCustomElement {
   }
 
   dataChanged(data) {
-    console.log("changed")
     if (this.isInitialized) {
+      // if (typeof percent === "string") {
+      //   this.percent = parseFloat(percent)
+      // }
       this.updateChart();
     }
   }
@@ -53,50 +54,46 @@ export class SmallHistogramCustomElement {
         "translate(" + this.margin.left + "," + this.margin.top + ")");
 
     // set the ranges
-    this.x = d3.scaleLinear()
+    this.x = d3.scaleBand()
       .range([0, this.width])
+      .padding(0.1)
 
     this.y = d3.scaleLinear()
       .range([this.height, 0])
-
   }
 
   updateChart() {
     let self = this;
 
+    // group the data for the bars
+    const count = _.countBy(this.data, this.property)
+    let bins = Object.entries(count)
+
     // Set x domain
-    this.x.domain(d3.extent(this.data, d => d[this.property]))
-
-    // Histogram
-    this.histogram = d3.histogram()
-      .value(function (d) { return d[self.property]; })
-      .domain(this.x.domain())
-    // .thresholds(this.x.ticks(this.bins))
-
-    let bins = this.histogram(this.data);
+    this.x.domain(Object.keys(count))
 
     // @ts-ignore
-    this.y.domain([0, d3.max(bins, function (d) { return d.length; })]);
+    this.y.domain([0, d3.max(Object.values(count))]);
 
-    // Join the rect with the bins data
-    var chart = this.svg.selectAll("rect")
+
+    let chart = this.svg.selectAll("rect")
       .data(bins)
 
-    chart.enter()
-      .append("rect")
+    chart.enter().append("rect")
       .merge(chart)
-      .attr("x", d => this.x(d.x0))
-      .attr("y", d => this.y(d.length))
-      .attr("width", function (d) { return self.x(d.x1) - self.x(d.x0) - 1; })
-      .attr("height", function (d) { return self.height - self.y(d.length); })
+      .attr("class", "bar")
+      .attr("x", d => this.x(d[0]))
+      .attr("y", d => this.y(d[1]))
+      .attr("width", this.x.bandwidth())
+      .attr("height", function (d) { return self.height - self.y(d[1]); });
 
     chart.enter()
       .append("text")
       .merge(chart)
       .attr("class", "bar-text")
-      .attr("x", d => this.x(d.x0))
-      .attr("y", d => this.y(d.length))
-      .text(d => d.length)
+      .attr("x", d => this.x(d[0]))
+      .attr("y", d => this.y(d[1]) - 1)
+      .text(d => d[1])
 
     chart.exit()
       .remove()
