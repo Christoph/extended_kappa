@@ -11,6 +11,7 @@ export class compare {
   labels = [];
   sort_keywords;
   sort_labels;
+  sort_cooc;
   searchKeywordsTerm = ""
   searchLabelsTerm = ""
   selectedCooc = []
@@ -41,12 +42,23 @@ export class compare {
       propertyName: "count",
       direction: "descending"
     }
+
+    this.sort_cooc = {
+      propertyName: "count",
+      direction: "descending"
+    }
   }
 
   computeDerivedValues() {
     // Coder Overlap
     for (const row of this.data) {
-      let overlap = new Set([row["KeyVis"], row["Mike"], row["Michael"], row["Torsten"]]).size
+      // let overlap = new Set([row["KeyVis"], row["Mike"], row["Michael"], row["Torsten"]]).size
+      let elements = new Set([row["Mike"], row["Michael"], row["Torsten"]]).size
+
+      let overlap = 0
+      if (elements == 1) overlap = 1
+      else if (elements == 2) overlap = 0.5
+      else if (elements == 3) overlap = 0
 
       row["Overlap"] = overlap
     }
@@ -57,7 +69,8 @@ export class compare {
     this.labels.length = 0;
 
     for (const keyword of this.data) {
-      let labels = Array.from(new Set([keyword["KeyVis"], keyword["Mike"], keyword["Michael"], keyword["Torsten"]]))
+      // let labels = Array.from(new Set([keyword["KeyVis"], keyword["Mike"], keyword["Michael"], keyword["Torsten"]]))
+      let labels = Array.from(new Set([keyword["Mike"], keyword["Michael"], keyword["Torsten"]]))
       let overlap = keyword["Overlap"]
 
       for (const label of labels) {
@@ -93,14 +106,14 @@ export class compare {
       this.labels.push({
         label: label,
         count: value.count,
-        uncertainty: value.overlap / value.count,
+        uncertainty: 1 - (value.overlap / value.count),
         cooc: cooc_list
       })
     })
 
-    for (const label of this.labels) {
-      label.uncertainty = label.uncertainty / max(this.labels, d => d.uncertainty)
-    }
+    // for (const label of this.labels) {
+    //   label.uncertainty = label.uncertainty / max(this.labels, d => d.uncertainty)
+    // }
   }
 
   selectLabel(label) {
@@ -123,10 +136,10 @@ export class compare {
   }
 
   getAgreementColor(overlap) {
-    if (overlap == 4) return "rgba(255, 99, 71, 0.401)";
-    // else if (overlap == 3) return "Orange";
-    // else if (overlap == 2) return "Green";
-    if (overlap == 1) return "rgba(0, 128, 0, 0.406)";
+    if (overlap == 1) return "rgba(0, 128, 0, 0.606)";
+    else if (overlap == 0.5) return "rgba(0, 128, 0, 0.406)"
+    else if (overlap == 0) return "rgba(255, 99, 71, 0.401)";
+    else if (overlap == 4) return "rgba(0, 128, 0, 0.206)"
   }
 
   getHighlight(label) {
@@ -141,8 +154,8 @@ export class compare {
     return 1
   }
 
-  setSortProperty(prop, sort_object_name) {
-    let direction = this[sort_object_name].direction
+  setKeywordSortProperty(prop) {
+    let direction = this.sort_keywords.direction
     if (direction == "ascending") {
       direction = "descending";
     }
@@ -150,7 +163,37 @@ export class compare {
       direction = "ascending";
     }
 
-    this[sort_object_name] = {
+    this.sort_keywords = {
+      propertyName: prop,
+      direction: direction
+    }
+  }
+
+  setLabelSortProperty(prop) {
+    let direction = this.sort_labels.direction
+    if (direction == "ascending") {
+      direction = "descending";
+    }
+    else {
+      direction = "ascending";
+    }
+
+    this.sort_labels = {
+      propertyName: prop,
+      direction: direction
+    }
+  }
+
+  setCoocSortProperty(prop) {
+    let direction = this.sort_cooc.direction
+    if (direction == "ascending") {
+      direction = "descending";
+    }
+    else {
+      direction = "ascending";
+    }
+
+    this.sort_cooc = {
       propertyName: prop,
       direction: direction
     }
@@ -168,7 +211,8 @@ export class compare {
   }
 
   filterLabelsFunc(searchExpression, value) {
-    let itemValue = [value["KeyVis"], value["Mike"], value["Michael"], value["Torsten"]].join(" ");
+    // let itemValue = [value["KeyVis"], value["Mike"], value["Michael"], value["Torsten"]].join(" ");
+    let itemValue = [value["Mike"], value["Michael"], value["Torsten"]].join(" ");
     if (!searchExpression || !itemValue) return false;
 
     return itemValue.toUpperCase().indexOf(searchExpression.toUpperCase()) !== -1;

@@ -22,7 +22,7 @@
         <thead>
           <tr>
             <th repeat.for="property of properties" style="cursor: pointer"
-              click.delegate="setSortProperty(property, 'sort_keywords')">
+              click.delegate="setKeywordSortProperty(property)">
               ${property}</th>
             <!-- <th>Histogram</th> -->
             <!-- <th style="cursor: pointer" click.delegate="setSortProperty('Keyword')">Keyword</th>
@@ -53,14 +53,14 @@
       <table>
         <thead>
           <tr>
-            <th style="cursor: pointer" click.delegate="setSortProperty('label', 'sort_labels')">Label</th>
-            <th style="cursor: pointer" click.delegate="setSortProperty('count', 'sort_labels')">Count</th>
-            <th style="cursor: pointer" click.delegate="setSortProperty('uncertainty', 'sort_labels')">Uncertainty</th>
+            <th style="cursor: pointer" click.delegate="setLabelSortProperty('label')">Label</th>
+            <th style="cursor: pointer" click.delegate="setLabelSortProperty('count')">Count</th>
+            <th style="cursor: pointer" click.delegate="setLabelSortProperty('uncertainty')">Uncertainty</th>
           </tr>
         </thead>
         <tbody>
           <tr style="cursor: pointer"
-            repeat.for="label of labels | customSort: sort_labels | filter:searchLabelsTerm:filterLabelsListFunc"
+            repeat.for="label of labels | filter:searchLabelsTerm:filterLabelsListFunc | customSort: sort_labels"
             click.delegate="selectLabel(label)">
             <td>${label["label"]} </td>
             <td>${label["count"]}</td>
@@ -72,13 +72,13 @@
         <table>
           <thead>
             <tr>
-              <th style="cursor: pointer" click.delegate="setSortProperty('label', 'sort_labels')">Coocurrent Label</th>
-              <th style="cursor: pointer" click.delegate="setSortProperty('count', 'sort_labels')">Count</th>
+              <th style="cursor: pointer" click.delegate="setCoocSortProperty('label')">Coocurrent Label</th>
+              <th style="cursor: pointer" click.delegate="setCoocSortProperty('count')">Count</th>
               </th>
             </tr>
           </thead>
           <tbody>
-            <tr style="cursor: pointer" repeat.for="cooc of selectedCooc | customSort: sort_labels"
+            <tr style="cursor: pointer" repeat.for="cooc of selectedCooc | customSort: sort_cooc"
               click.delegate="selectCooc(cooc)">
               <td>${cooc["label"]} </td>
               <td>${cooc["count"]}</td>
