@@ -15,11 +15,12 @@ export class SmallHistogramCustomElement {
 
   @bindable data;
   @bindable property: string;
+  @bindable bins: string;
   @bindable xsize: string;
   @bindable ysize: string;
 
   // set the dimensions and margins of the graph
-  margin = { top: 0, right: 0, bottom: 0, left: 0 };
+  margin = { top: 0, right: 10, bottom: 20, left: 10 };
   height: number;
   width: number;
 
@@ -54,51 +55,39 @@ export class SmallHistogramCustomElement {
         "translate(" + this.margin.left + "," + this.margin.top + ")");
 
     // set the ranges
-    this.x = d3.scaleLinear()
+    this.x = d3.scaleBand()
       .range([0, this.width])
-    // .domain([0, 1])
+      .padding(0.1)
 
     this.y = d3.scaleLinear()
-      .range([0, this.height])
-    // .domain([0, 1])
-
-    // add the x Axis
-    this.svg.append("g")
-      .attr("transform", "translate(0," + this.height + ")")
-      .attr("class", "xAxis");
+      .range([this.height, 0])
   }
 
   updateChart() {
     let self = this;
 
-    // set histogram
-    this.histogram = d3.histogram()
-      .value(d => d[this.property])
-      .domain([1, 4])
-      .thresholds(4);
-
     // group the data for the bars
-    let bins = this.histogram(this.data);
-    console.log(self.height)
+    const count = _.countBy(this.data, this.property)
+    let bins = Object.entries(count)
 
-    this.x.domain([0, 4])
+    // Set x domain
+    this.x.domain(Object.keys(count))
+
     // @ts-ignore
-    this.y.domain([0, 4]);
-    // this.y.domain([0, d3.max(bins, d => d.length)]);
+    this.y.domain([0, d3.max(Object.values(count))]);
+
 
     this.svg.selectAll("rect")
       .data(bins)
       .enter().append("rect")
       .attr("class", "bar")
-      .attr("x", 1)
-      .attr("transform", function (d) {
-        return "translate(" + self.x(d.x0) + "," + self.y(d.length) + ")";
-      })
-      .attr("width", function (d) { return self.x(d.x1) - self.x(d.x0) - 1; })
-      .attr("height", function (d) { return self.height - self.y(d.length); });
+      .attr("x", d => this.x(d[0]))
+      .attr("y", d => this.y(d[1]))
+      .attr("width", this.x.bandwidth())
+      .attr("height", function (d) { return self.height - self.y(d[1]); });
 
     this.svg.append("g")
-      .attr("transform", "translate(0, " + self.height + ")")
-      .call(d3.axisBottom(self.x));
+      .attr("transform", "translate(0, " + this.height + ")")
+      .call(d3.axisBottom(self.x).ticks(this.bins));
   }
 }
