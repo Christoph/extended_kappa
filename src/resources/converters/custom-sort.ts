@@ -1,7 +1,6 @@
 export class CustomSortValueConverter {
   toView(array, config) {
     let factor = (config.direction || "ascending") === "ascending" ? 1 : -1;
-    console.log(array)
     if (array.length > 0) {
       return array.sort((a, b) => {
         if (isNaN(a[config.propertyName]) || isNaN(b[config.propertyName])) {
