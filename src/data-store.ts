@@ -1,7 +1,7 @@
 export class DataStore {
   public tool_data = [];
   public manual_data = [];
-  public label_data = [];
+  public label_data = new Map();
 
   constructor() {
     let tool_data = require('../data/tool_results.json')
@@ -17,7 +17,7 @@ export class DataStore {
     }
 
     for (let row in label_data) {
-      this.label_data.push(label_data[row])
+      this.label_data.set(label_data[row]["Topic"], label_data[row]["Category"])
     }
   }
 

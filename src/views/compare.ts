@@ -1,22 +1,31 @@
 import { autoinject } from 'aurelia-dependency-injection';
+import { BindingSignaler } from 'aurelia-templating-resources';
 import { DataStore } from 'data-store';
 import * as _ from "lodash";
 import { max } from 'd3';
+import { observable } from 'aurelia-framework';
 
 @autoinject()
 export class compare {
+  initialized = false;
   data;
+  label_mapping;
   selectedDataset;
   properties = [];
   labels = [];
+  @observable overlap_property = "Overlap"
+
+
   sort_keywords;
   sort_labels;
   sort_cooc;
+
   searchKeywordsTerm = ""
   searchLabelsTerm = ""
   selectedCooc = []
 
-  constructor(public store: DataStore) {
+  constructor(public store: DataStore, public signaler: BindingSignaler) {
+    this.label_mapping = store.getLabelData()
     this.data = store.getToolData()
     this.selectedDataset = "Tool"
 
@@ -38,20 +47,40 @@ export class compare {
       propertyName: "count",
       direction: "descending"
     }
+
+    this.initialized = true;
+  }
+
+  overlap_propertyChanged() {
+    if (this.initialized) {
+      console.log("changed")
+      this.setOverlapSortProperty()
+      this.setOverlapSortProperty()
+    }
   }
 
   computeDerivedValues() {
     // Coder Overlap
     for (const row of this.data) {
       // let overlap = new Set([row["KeyVis"], row["Mike"], row["Michael"], row["Torsten"]]).size
-      let elements = new Set([row["Mike"], row["Michael"], row["Torsten"]]).size
-
+      let n = 3
       let overlap = 0
+      let overlap_cat = 0
+
+      let elements = new Set([row["Mike"], row["Michael"], row["Torsten"]]).size
+      let elements_cat = new Set([this.label_mapping.get(row["Mike"]), this.label_mapping.get(row["Michael"]), this.label_mapping.get(row["Torsten"])]).size
+
       if (elements == 1) overlap = 1
-      else if (elements == 2) overlap = 0.5
-      else if (elements == 3) overlap = 0
+      else if (elements > 1 && elements < n) overlap = elements / n
+      else if (elements == n) overlap = 0
 
       row["Overlap"] = overlap
+
+      if (elements_cat == 1) overlap_cat = 1
+      else if (elements_cat > 1 && elements_cat < n) overlap_cat = elements_cat / n
+      else if (elements_cat == n) overlap_cat = 0
+
+      row["Overlap_Category"] = overlap_cat
     }
   }
 
@@ -126,11 +155,19 @@ export class compare {
     this.computeLabelStats()
   }
 
-  getAgreementColor(overlap) {
+  getAgreementColor(keyword) {
+    let overlap;
+    if (this.overlap_property) {
+      overlap = keyword["Overlap"]
+    }
+    else {
+      overlap = keyword["Overlap_Category"]
+    }
+
     if (overlap == 1) return "rgba(0, 128, 0, 0.606)";
-    else if (overlap == 0.5) return "rgba(0, 128, 0, 0.406)"
     else if (overlap == 0) return "rgba(255, 99, 71, 0.401)";
-    else if (overlap == 4) return "rgba(0, 128, 0, 0.206)"
+    else return "rgba(0, 128, 0, 0.406)"
+    // else if (overlap == 4) return "rgba(0, 128, 0, 0.206)"
   }
 
   getHighlight(label) {
@@ -143,6 +180,29 @@ export class compare {
       }
     }
     return 1
+  }
+
+  setOverlapSortProperty() {
+    let overlap;
+    if (this.overlap_property) {
+      overlap = "Overlap"
+    }
+    else {
+      overlap = "Overlap_Category"
+    }
+
+    let direction = this.sort_keywords.direction
+    if (direction == "ascending") {
+      direction = "descending";
+    }
+    else {
+      direction = "ascending";
+    }
+
+    this.sort_keywords = {
+      propertyName: overlap,
+      direction: direction
+    }
   }
 
   setKeywordSortProperty(prop) {
