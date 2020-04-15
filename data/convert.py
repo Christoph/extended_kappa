@@ -54,3 +54,25 @@ man = man.apply(updateRowManual, axis=1)
 man.columns = columns
 
 man.to_json("manual_results.json", orient="index")
+
+# Label Categories
+
+
+def updateLabelRow(series):
+    temp = []
+    for index, value in series.items():
+        if index == "Category":
+            temp.append(value)
+        else:
+            temp.append(normalizeString(value))
+    return pd.Series(temp)
+
+
+labels = pd.read_csv("labels.csv")
+labels = labels.dropna(axis=1)
+columns = labels.columns
+
+labels = labels.apply(updateLabelRow, axis=1)
+labels.columns = columns
+
+labels.to_json("labels.json", orient="index")
