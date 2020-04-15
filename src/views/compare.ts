@@ -56,6 +56,7 @@ export class compare {
       console.log("changed")
       this.setOverlapSortProperty()
       this.setOverlapSortProperty()
+      this.computeLabelStats()
     }
   }
 
@@ -90,8 +91,15 @@ export class compare {
 
     for (const keyword of this.data) {
       // let labels = Array.from(new Set([keyword["KeyVis"], keyword["Mike"], keyword["Michael"], keyword["Torsten"]]))
+      let overlap;
       let labels = Array.from(new Set([keyword["Mike"], keyword["Michael"], keyword["Torsten"]]))
-      let overlap = keyword["Overlap"]
+
+      if (this.overlap_property) {
+        overlap = keyword["Overlap"]
+      }
+      else {
+        overlap = keyword["Overlap_Category"]
+      }
 
       for (const label of labels) {
         if (label_stats.has(label)) {

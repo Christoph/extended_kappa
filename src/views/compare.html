@@ -7,7 +7,6 @@
       value.bind="searchLabelsTerm" placeholder="search Labels..."></input>
     <i class="far fa-trash fa-2x" style="display: inline-block;vertical-align: middle; cursor: pointer"
       click.delegate="resetSearch()"></i>
-    <button md-button click.delegate="setOverlapSortProperty()">Sort by Author Agreement</button>
     <div style="float: right; vertical-align: middle">
       <a md-button md-dropdown="activates: dropdown1;">Dataset: ${selectedDataset}</a>
       <ul id="dropdown1">
@@ -17,7 +16,10 @@
     </div>
   </div>
   <div>
-    <md-switch label-on="Overlap" label-off="Overlap_Category" checked.bind="overlap_property"></md-switch>
+    <div style="display: inline-block">
+      <md-switch label-on="Labels" label-off="Categories" checked.bind="overlap_property"></md-switch>
+    </div>
+    <button md-button click.delegate="setOverlapSortProperty()">Sort by Author Agreement</button>
   </div>
   <div class="row">
     <div class="col m8">
