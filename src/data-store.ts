@@ -1,10 +1,12 @@
 export class DataStore {
   public tool_data = [];
   public manual_data = [];
+  public label_data = [];
 
   constructor() {
     let tool_data = require('../data/tool_results.json')
     let manual_data = require('../data/manual_results.json')
+    let label_data = require('../data/labels.json')
 
     for (let row in tool_data) {
       this.tool_data.push(tool_data[row])
@@ -12,6 +14,10 @@ export class DataStore {
 
     for (let row in manual_data) {
       this.manual_data.push(manual_data[row])
+    }
+
+    for (let row in label_data) {
+      this.label_data.push(label_data[row])
     }
   }
 
@@ -21,5 +27,9 @@ export class DataStore {
 
   getManualData() {
     return this.manual_data
+  }
+
+  getLabelData() {
+    return this.label_data
   }
 }
