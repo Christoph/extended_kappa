@@ -5,11 +5,17 @@ import { observable } from 'aurelia-framework';
 
 @autoinject()
 export class Codertable {
-  label_mapping;
+  activeLabel = "";
   mike = [];
   michael = [];
   torsten = [];
   keyvis = [];
+  datasets = []
+
+  scrollKeyvis = 0;
+  scrollMike = 0;
+  scrollMichael = 0;
+  scrollTorsten = 0;
 
   sort_keyvis;
   sort_mike;
@@ -17,7 +23,6 @@ export class Codertable {
   sort_torsten;
 
   constructor(public store: DataStore) {
-    this.label_mapping = store.getLabelData()
     let toolData = store.getToolData()
     let manualData = store.getManualData()
 
@@ -59,6 +64,23 @@ export class Codertable {
       })
     })
 
+    this.datasets.push({
+      data: this.keyvis,
+      scroller: "keyvis"
+    })
+    this.datasets.push({
+      data: this.mike,
+      scroller: "mike"
+    })
+    this.datasets.push({
+      data: this.michael,
+      scroller: "michael"
+    })
+    this.datasets.push({
+      data: this.torsten,
+      scroller: "torsten"
+    })
+
     this.sort_keyvis = {
       propertyName: "count",
       direction: "descending"
@@ -78,8 +100,30 @@ export class Codertable {
   }
 
   selectLabel(label, source) {
-    console.log(label, source)
-    // this.scrollTop = this.data[10]["element"].offsetTop
+    this.activeLabel = label
+
+    for (const other of this.datasets) {
+      let row = other.data.filter(d => d.label == label.label)
+      if (row.length > 0) {
+        if (other.scroller == "keyvis") this.scrollKeyvis = row[0].element.offsetTop
+        if (other.scroller == "mike") this.scrollMike = row[0].element.offsetTop
+        if (other.scroller == "michael") this.scrollMichael = row[0].element.offsetTop
+        if (other.scroller == "torsten") this.scrollTorsten = row[0].element.offsetTop
+      }
+    }
+  }
+
+  getHighlight(label) {
+    console.log(this.activeLabel)
+    if (this.activeLabel.length > 0) {
+      if (this.activeLabel != label.label) {
+        return 0.25;
+      }
+      else {
+        return 1;
+      }
+    }
+    return 1
   }
 
   setSort(prop) {

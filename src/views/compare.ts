@@ -15,8 +15,6 @@ export class compare {
   labels = [];
   @observable overlap_property = "Overlap"
 
-  scrollTop = 0;
-
   sort_keywords;
   sort_labels;
   sort_cooc;
