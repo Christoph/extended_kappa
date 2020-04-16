@@ -1,0 +1,118 @@
+<template>
+  <div class="row">
+    <div class="col m3">
+      <span style="font-size: larger; font-weight: 800">KeyVis</span>
+    </div>
+    <div class="col m3">
+      <span style="font-size: larger; font-weight: 800">Mike</span>
+    </div>
+    <div class="col m3">
+      <span style="font-size: larger; font-weight: 800">Michael</span>
+    </div>
+    <div class="col m3">
+      <span style="font-size: larger; font-weight: 800">Torsten</span>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col m3" style="height: 80vh; overflow: auto" scrolltop.bind="scrollKeyvis">
+      <table>
+        <thead>
+          <tr>
+            <th style="cursor: pointer" click.delegate="setSort('label')">Label</th>
+            <th style="cursor: pointer" click.delegate="setSort('count')">Count</th>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              ${keyvis.length} Labels
+            </td>
+            <td as-element="small-bars-obs" data.bind="keyvis" property="count" xSize="100" ySize="60">
+            </td>
+          </tr>
+          <tr style="cursor: pointer" repeat.for="label of keyvis | customSort: sort_keyvis" ref="label['element']"
+            click.delegate="selectLabel(label, keyvis)">
+            <td>${label["label"]} </td>
+            <td>${label["count"]}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="col m3" style="height: 80vh; overflow: auto" scrolltop.bind="scrollMike">
+      <table>
+        <thead>
+          <tr>
+            <th style="cursor: pointer" click.delegate="setSort('label')">Label</th>
+            <th style="cursor: pointer" click.delegate="setSort('count')">Count</th>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              ${mike.length} Labels
+            </td>
+            <td as-element="small-bars-obs" data.bind="mike" property="count" xSize="100" ySize="60">
+            </td>
+          </tr>
+          <tr style="cursor: pointer" repeat.for="label of mike | customSort: sort_keyvis" ref="label['element']"
+            click.delegate="selectLabel(label, mike)">
+            <td>${label["label"]} </td>
+            <td>${label["count"]}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="col m3" style="height: 80vh; overflow: auto" scrolltop.bind="scrollMichael">
+      <table>
+        <thead>
+          <tr>
+            <th style="cursor: pointer" click.delegate="setSort('label')">Label</th>
+            <th style="cursor: pointer" click.delegate="setSort('count')">Count</th>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              ${michael.length} Labels
+            </td>
+            <td as-element="small-bars-obs" data.bind="michael" property="count" xSize="100" ySize="60">
+            </td>
+          </tr>
+          <tr style="cursor: pointer" repeat.for="label of michael | customSort: sort_keyvis" ref="label['element']"
+            click.delegate="selectLabel(label, michael)">
+            <td>${label["label"]} </td>
+            <td>${label["count"]}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="col m3" style="height: 80vh; overflow: auto" scrolltop.bind="scrollTorsten">
+      <table>
+        <thead>
+          <tr>
+            <th style="cursor: pointer" click.delegate="setSort('label')">Label</th>
+            <th style="cursor: pointer" click.delegate="setSort('count')">Count</th>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              ${torsten.length} Labels
+            </td>
+            <td as-element="small-bars-obs" data.bind="torsten" property="count" xSize="100" ySize="60">
+            </td>
+          </tr>
+          <tr style="cursor: pointer" repeat.for="label of torsten | customSort: sort_keyvis" ref="label['element']"
+            click.delegate="selectLabel(label, torsten)">
+            <td>${label["label"]} </td>
+            <td>${label["count"]}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</template>

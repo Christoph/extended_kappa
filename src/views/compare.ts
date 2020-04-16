@@ -15,6 +15,7 @@ export class compare {
   labels = [];
   @observable overlap_property = "Overlap"
 
+  scrollTop = 0;
 
   sort_keywords;
   sort_labels;
@@ -51,6 +52,10 @@ export class compare {
     this.initialized = true;
   }
 
+  goto() {
+    this.scrollTop = this.data[10]["element"].offsetTop
+  }
+
   overlap_propertyChanged() {
     if (this.initialized) {
       console.log("changed")
@@ -82,6 +87,8 @@ export class compare {
       else if (elements_cat == n) overlap_cat = 0
 
       row["Overlap_Category"] = overlap_cat
+
+      row["element"] = []
     }
   }
 

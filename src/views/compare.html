@@ -20,9 +20,10 @@
       <md-switch label-on="Labels" label-off="Categories" checked.bind="overlap_property"></md-switch>
     </div>
     <button md-button click.delegate="setOverlapSortProperty()">Sort by Author Agreement</button>
+    <button md-button click.delegate="goto()">Goto</button>
   </div>
   <div class="row">
-    <div class="col m8">
+    <div class="col m8" style="height: 80vh; overflow: auto" scrolltop.bind="scrollTop">
       <table>
         <thead>
           <tr>
@@ -39,7 +40,8 @@
         <tbody>
           <tr
             repeat.for="keyword of data | customSort: sort_keywords | filter:searchKeywordsTerm:filterKeywordsFunc | filter:searchLabelsTerm:filterLabelsFunc"
-            click.delegate="selectKeyword(keyword)" css="background-color: ${getAgreementColor(keyword)}">
+            click.delegate="selectKeyword(keyword)" css="background-color: ${getAgreementColor(keyword)}"
+            ref="keyword['element']">
             <td css="opacity: ${getHighlight(keyword[property])}" repeat.for="property of properties">
               <span
                 style="font-size: smaller; color: rgba(0, 0, 0, 0.509)">${label_mapping.get(keyword[property])}<br></span>
@@ -53,7 +55,7 @@
         </tbody>
       </table>
     </div>
-    <div class="col m4">
+    <div class="col m4" style="height: 80vh; overflow: auto">
       <table>
         <thead>
           <tr>
