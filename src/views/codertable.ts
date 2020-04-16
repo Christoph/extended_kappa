@@ -77,6 +77,11 @@ export class Codertable {
     }
   }
 
+  selectLabel(label, source) {
+    console.log(label, source)
+    // this.scrollTop = this.data[10]["element"].offsetTop
+  }
+
   setSort(prop) {
     let direction = this.sort_keyvis.direction
     if (direction == "ascending") {
