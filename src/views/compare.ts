@@ -14,7 +14,6 @@ export class compare {
   properties = [];
   labels = [];
   @observable overlap_property = "Overlap"
-  coders;
 
   sort_keywords;
   sort_labels;
@@ -24,18 +23,50 @@ export class compare {
   searchLabelsTerm = ""
   selectedCooc = []
 
+  all_coders = [
+  ];
+
+  coders = [];
+
+  codersChanged(coder) {
+    if (this.coders.includes(coder)) {
+      this.coders.splice(
+        this.coders.indexOf(coder), 1
+      );
+    }
+    else {
+      this.coders.push(coder)
+    }
+
+    this.computeDerivedValues(this.coders)
+    this.computeLabelStats(this.coders)
+
+    this.setOverlapSortProperty()
+    this.setOverlapSortProperty()
+  }
+
   constructor(public store: DataStore, public signaler: BindingSignaler) {
     this.label_mapping = store.getLabelData()
     this.data = store.getToolData()
     this.selectedDataset = "Tool"
 
     this.properties = Object.getOwnPropertyNames(this.data[0])
+
+    for (const prop of this.properties) {
+      if (prop != "Keyword") {
+        this.all_coders.push(
+          {
+            name: prop
+          }
+        )
+      }
+    }
+
     this.sort_keywords = {
       propertyName: this.properties[0],
       direction: "ascending"
     }
 
-    this.coders = ["Mike", "Michael", "Torsten"]
     this.computeDerivedValues(this.coders)
     this.computeLabelStats(this.coders)
 
@@ -62,7 +93,9 @@ export class compare {
 
   computeDerivedValues(coders) {
     // Coder Overlap
-    for (const row of this.data) {
+    // for (const [index, row] of this.data.entries()) {
+    // for (const row of this.data) {
+    this.data.forEach((row, index) => {
       let n = coders.length
       let overlap = 0
       let overlap_cat = 0
@@ -71,8 +104,8 @@ export class compare {
       let elements_cat_s = new Set()
 
       for (const coder of coders) {
-        elements_s.add(row[coder])
-        elements_cat_s.add(this.label_mapping.get(row["Mike"]))
+        elements_s.add(row[coder.name])
+        elements_cat_s.add(this.label_mapping.get(row[coder.name]))
       }
 
       let elements = elements_s.size
@@ -84,12 +117,15 @@ export class compare {
 
       row["Overlap"] = overlap
 
+      // this.data.splice(index, 1, row)
+      //this.items[pos] = data; <-- change this to: this.items.splice(pos, 1, data);
+
       if (elements_cat == 1) overlap_cat = 1
       else if (elements_cat > 1 && elements_cat < n) overlap_cat = elements_cat / n
       else if (elements_cat == n) overlap_cat = 0
 
       row["Overlap_Category"] = overlap_cat
-    }
+    })
   }
 
   computeLabelStats(coders) {
@@ -101,7 +137,7 @@ export class compare {
 
       let unique_labels = new Set()
       for (const coder of coders) {
-        unique_labels.add(keyword[coder])
+        unique_labels.add(keyword[coder.name])
       }
       let labels = Array.from(unique_labels)
 

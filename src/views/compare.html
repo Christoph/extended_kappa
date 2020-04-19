@@ -16,9 +16,14 @@
     </div>
   </div>
   <div>
-    <div style="display: inline-block">
+    <div style="display: inline-block; margin-right: 10px">
       <md-switch label-on="Labels" label-off="Categories" checked.bind="overlap_property"></md-switch>
     </div>
+    <span repeat.for="cod of all_coders ">
+      <md-checkbox model.bind="cod" checked.bind="coders" click.delegate="codersChanged(cod)">
+        ${cod.name}
+      </md-checkbox>
+    </span>
     <button md-button click.delegate="setOverlapSortProperty()">Sort by Author Agreement</button>
   </div>
   <div class="row">
@@ -41,7 +46,7 @@
             repeat.for="keyword of data | customSort: sort_keywords | filter:searchKeywordsTerm:filterKeywordsFunc | filter:searchLabelsTerm:filterLabelsFunc"
             click.delegate="selectKeyword(keyword)">
             <td
-              css="opacity: ${getHighlight(keyword[property])}; background-color: ${getAgreementColor(keyword, property)}"
+              css="opacity: ${getHighlight(keyword[property])}; background-color: ${keyword['Overlap'] | overlapColor:property:coders}"
               repeat.for="property of properties">
               <span
                 style="font-size: smaller; color: rgba(0, 0, 0, 0.509)">${label_mapping.get(keyword[property])}<br></span>

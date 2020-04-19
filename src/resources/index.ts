@@ -12,6 +12,7 @@ export function configure(config: FrameworkConfiguration) {
     PLATFORM.moduleName("./elements/small-histogram"),
     PLATFORM.moduleName("./elements/small-histogram-obs"),
     PLATFORM.moduleName("./converters/number-format"),
+    PLATFORM.moduleName("./converters/overlap-color"),
     PLATFORM.moduleName("./converters/custom-sort"),
     PLATFORM.moduleName("./converters/custom-sort-length"),
     PLATFORM.moduleName("./converters/custom-filter-sort-length"),
