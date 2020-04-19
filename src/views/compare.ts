@@ -126,8 +126,6 @@ export class compare {
 
       row["Overlap_Category"] = overlap_cat
     }
-
-    console.log(this.data)
   }
 
   computeLabelStats(coders) {

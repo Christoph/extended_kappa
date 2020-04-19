@@ -1,20 +1,26 @@
 <template>
   <div class="row">
-    <div class="col m3">
+    <div class="col m2">
       <span style="font-size: larger; font-weight: 800">KeyVis</span>
     </div>
-    <div class="col m3">
+    <div class="col m2">
       <span style="font-size: larger; font-weight: 800">Mike</span>
     </div>
-    <div class="col m3">
+    <div class="col m2">
       <span style="font-size: larger; font-weight: 800">Michael</span>
     </div>
-    <div class="col m3">
+    <div class="col m2">
       <span style="font-size: larger; font-weight: 800">Torsten</span>
+    </div>
+    <div class="col m2">
+      <span style="font-size: larger; font-weight: 800">RM</span>
+    </div>
+    <div class="col m2">
+      <span style="font-size: larger; font-weight: 800">GK</span>
     </div>
   </div>
   <div class="row">
-    <div class="col m3" style="height: 80vh; overflow: auto" scrolltop.bind="scrollKeyvis">
+    <div class="col m2" style="height: 80vh; overflow: auto" scrolltop.bind="scrollKeyvis">
       <table>
         <thead>
           <tr>
@@ -39,7 +45,7 @@
         </tbody>
       </table>
     </div>
-    <div class="col m3" style="height: 80vh; overflow: auto" scrolltop.bind="scrollMike">
+    <div class="col m2" style="height: 80vh; overflow: auto" scrolltop.bind="scrollMike">
       <table>
         <thead>
           <tr>
@@ -64,7 +70,7 @@
         </tbody>
       </table>
     </div>
-    <div class="col m3" style="height: 80vh; overflow: auto" scrolltop.bind="scrollMichael">
+    <div class="col m2" style="height: 80vh; overflow: auto" scrolltop.bind="scrollMichael">
       <table>
         <thead>
           <tr>
@@ -89,7 +95,7 @@
         </tbody>
       </table>
     </div>
-    <div class="col m3" style="height: 80vh; overflow: auto" scrolltop.bind="scrollTorsten">
+    <div class="col m2" style="height: 80vh; overflow: auto" scrolltop.bind="scrollTorsten">
       <table>
         <thead>
           <tr>
@@ -108,6 +114,56 @@
           </tr>
           <tr style="cursor: pointer" repeat.for="label of torsten | customSort: sort_keyvis" ref="label['element']"
             click.delegate="selectLabel(label, torsten)">
+            <td>${label["label"]} </td>
+            <td>${label["count"]}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="col m2" style="height: 80vh; overflow: auto" scrolltop.bind="scrollRM">
+      <table>
+        <thead>
+          <tr>
+            <th style="cursor: pointer" click.delegate="setSort('label')">Label</th>
+            <th style="cursor: pointer" click.delegate="setSort('count')">Count</th>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              ${torsten.length} Labels
+            </td>
+            <td as-element="small-bars-obs" data.bind="rm" property="count" xSize="100" ySize="60">
+            </td>
+          </tr>
+          <tr style="cursor: pointer" repeat.for="label of rm | customSort: sort_rm" ref="label['element']"
+            click.delegate="selectLabel(label, rm)">
+            <td>${label["label"]} </td>
+            <td>${label["count"]}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="col m2" style="height: 80vh; overflow: auto" scrolltop.bind="scrollGK">
+      <table>
+        <thead>
+          <tr>
+            <th style="cursor: pointer" click.delegate="setSort('label')">Label</th>
+            <th style="cursor: pointer" click.delegate="setSort('count')">Count</th>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              ${torsten.length} Labels
+            </td>
+            <td as-element="small-bars-obs" data.bind="gk" property="count" xSize="100" ySize="60">
+            </td>
+          </tr>
+          <tr style="cursor: pointer" repeat.for="label of gk | customSort: sort_gk" ref="label['element']"
+            click.delegate="selectLabel(label, gk)">
             <td>${label["label"]} </td>
             <td>${label["count"]}</td>
           </tr>

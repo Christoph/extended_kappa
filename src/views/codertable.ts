@@ -6,21 +6,29 @@ import { observable } from 'aurelia-framework';
 @autoinject()
 export class Codertable {
   activeLabel = "";
+  datasets = []
+
   mike = [];
   michael = [];
   torsten = [];
   keyvis = [];
-  datasets = []
+  rm = [];
+  gk = [];
 
   scrollKeyvis = 0;
   scrollMike = 0;
   scrollMichael = 0;
   scrollTorsten = 0;
+  scrollRM = 0;
+  scrollGK = 0;
 
   sort_keyvis;
   sort_mike;
   sort_michael;
   sort_torsten;
+  sort_rm;
+  sort_gk;
+
 
   constructor(public store: DataStore) {
     let toolData = store.getToolData()
@@ -64,6 +72,24 @@ export class Codertable {
       })
     })
 
+    mi = new Map(Object.entries(_.countBy(data, "RM")))
+    mi.forEach((value, label) => {
+      this.rm.push({
+        label: label,
+        count: value,
+        element: []
+      })
+    })
+
+    mi = new Map(Object.entries(_.countBy(data, "GK")))
+    mi.forEach((value, label) => {
+      this.gk.push({
+        label: label,
+        count: value,
+        element: []
+      })
+    })
+
     this.datasets.push({
       data: this.keyvis,
       scroller: "keyvis"
@@ -79,6 +105,14 @@ export class Codertable {
     this.datasets.push({
       data: this.torsten,
       scroller: "torsten"
+    })
+    this.datasets.push({
+      data: this.rm,
+      scroller: "rm"
+    })
+    this.datasets.push({
+      data: this.gk,
+      scroller: "gk"
     })
 
     this.sort_keyvis = {
@@ -97,6 +131,14 @@ export class Codertable {
       propertyName: "count",
       direction: "descending"
     }
+    this.sort_rm = {
+      propertyName: "count",
+      direction: "descending"
+    }
+    this.sort_gk = {
+      propertyName: "count",
+      direction: "descending"
+    }
   }
 
   selectLabel(label, source) {
@@ -109,12 +151,13 @@ export class Codertable {
         if (other.scroller == "mike") this.scrollMike = row[0].element.offsetTop
         if (other.scroller == "michael") this.scrollMichael = row[0].element.offsetTop
         if (other.scroller == "torsten") this.scrollTorsten = row[0].element.offsetTop
+        if (other.scroller == "rm") this.scrollRM = row[0].element.offsetTop
+        if (other.scroller == "gk") this.scrollGK = row[0].element.offsetTop
       }
     }
   }
 
   getHighlight(label) {
-    console.log(this.activeLabel)
     if (this.activeLabel.length > 0) {
       if (this.activeLabel != label.label) {
         return 0.25;
