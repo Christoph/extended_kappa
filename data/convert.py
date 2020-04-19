@@ -19,8 +19,7 @@ def updateRow(series):
 
 
 data = pd.read_csv("tool_results.csv")
-data = data.drop(["Rec", "MichaelRecPosition", "MikeRecPosition",
-                  "TorstenRecPosition"], axis=1)
+data = data.drop(["Rec"], axis=1)
 columns = data.columns
 
 data = data.apply(updateRow, axis=1)
