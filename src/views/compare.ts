@@ -14,6 +14,7 @@ export class compare {
   properties = [];
   labels = [];
   @observable overlap_property = "Overlap"
+  coders;
 
   sort_keywords;
   sort_labels;
@@ -34,8 +35,9 @@ export class compare {
       direction: "ascending"
     }
 
-    this.computeDerivedValues()
-    this.computeLabelStats()
+    this.coders = ["Mike", "Michael", "Torsten"]
+    this.computeDerivedValues(this.coders)
+    this.computeLabelStats(this.coders)
 
     this.sort_labels = {
       propertyName: "count",
@@ -54,20 +56,27 @@ export class compare {
     if (this.initialized) {
       this.setOverlapSortProperty()
       this.setOverlapSortProperty()
-      this.computeLabelStats()
+      this.computeLabelStats(this.coders)
     }
   }
 
-  computeDerivedValues() {
+  computeDerivedValues(coders) {
     // Coder Overlap
     for (const row of this.data) {
-      // let overlap = new Set([row["KeyVis"], row["Mike"], row["Michael"], row["Torsten"]]).size
-      let n = 3
+      let n = coders.length
       let overlap = 0
       let overlap_cat = 0
 
-      let elements = new Set([row["Mike"], row["Michael"], row["Torsten"]]).size
-      let elements_cat = new Set([this.label_mapping.get(row["Mike"]), this.label_mapping.get(row["Michael"]), this.label_mapping.get(row["Torsten"])]).size
+      let elements_s = new Set()
+      let elements_cat_s = new Set()
+
+      for (const coder of coders) {
+        elements_s.add(row[coder])
+        elements_cat_s.add(this.label_mapping.get(row["Mike"]))
+      }
+
+      let elements = elements_s.size
+      let elements_cat = elements_cat_s.size
 
       if (elements == 1) overlap = 1
       else if (elements > 1 && elements < n) overlap = elements / n
@@ -83,14 +92,18 @@ export class compare {
     }
   }
 
-  computeLabelStats() {
+  computeLabelStats(coders) {
     let label_stats = new Map()
     this.labels.length = 0;
 
     for (const keyword of this.data) {
-      // let labels = Array.from(new Set([keyword["KeyVis"], keyword["Mike"], keyword["Michael"], keyword["Torsten"]]))
       let overlap;
-      let labels = Array.from(new Set([keyword["Mike"], keyword["Michael"], keyword["Torsten"]]))
+
+      let unique_labels = new Set()
+      for (const coder of coders) {
+        unique_labels.add(keyword[coder])
+      }
+      let labels = Array.from(unique_labels)
 
       if (this.overlap_property) {
         overlap = keyword["Overlap"]
@@ -136,10 +149,6 @@ export class compare {
         cooc: cooc_list
       })
     })
-
-    // for (const label of this.labels) {
-    //   label.uncertainty = label.uncertainty / max(this.labels, d => d.uncertainty)
-    // }
   }
 
   selectLabel(label) {
@@ -157,11 +166,11 @@ export class compare {
       this.selectedDataset = "Manual"
     }
 
-    this.computeDerivedValues()
-    this.computeLabelStats()
+    this.computeDerivedValues(this.coders)
+    this.computeLabelStats(this.coders)
   }
 
-  getAgreementColor(keyword) {
+  getAgreementColor(keyword, property) {
     let overlap;
     if (this.overlap_property) {
       overlap = keyword["Overlap"]
@@ -170,10 +179,12 @@ export class compare {
       overlap = keyword["Overlap_Category"]
     }
 
-    if (overlap == 1) return "rgba(0, 128, 0, 0.606)";
-    else if (overlap == 0) return "rgba(255, 99, 71, 0.401)";
-    else return "rgba(0, 128, 0, 0.406)"
-    // else if (overlap == 4) return "rgba(0, 128, 0, 0.206)"
+    if (this.coders.includes(property)) {
+      if (overlap == 1) return "rgba(0, 128, 0, 0.606)";
+      else if (overlap == 0) return "rgba(255, 99, 71, 0.401)";
+      else return "rgba(0, 128, 0, 0.406)"
+      // else if (overlap == 4) return "rgba(0, 128, 0, 0.206)"
+    }
   }
 
   getHighlight(label) {
