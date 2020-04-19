@@ -92,11 +92,9 @@ export class compare {
   }
 
   computeDerivedValues(coders) {
+    let n = coders.length
     // Coder Overlap
-    // for (const [index, row] of this.data.entries()) {
-    // for (const row of this.data) {
-    this.data.forEach((row, index) => {
-      let n = coders.length
+    for (const row of this.data) {
       let overlap = 0
       let overlap_cat = 0
 
@@ -106,6 +104,7 @@ export class compare {
       for (const coder of coders) {
         elements_s.add(row[coder.name])
         elements_cat_s.add(this.label_mapping.get(row[coder.name]))
+
       }
 
       let elements = elements_s.size
@@ -115,6 +114,7 @@ export class compare {
       else if (elements > 1 && elements < n) overlap = elements / n
       else if (elements == n) overlap = 0
 
+      row["OverlapCount"] = n - elements + 1
       row["Overlap"] = overlap
 
       // this.data.splice(index, 1, row)
@@ -125,7 +125,9 @@ export class compare {
       else if (elements_cat == n) overlap_cat = 0
 
       row["Overlap_Category"] = overlap_cat
-    })
+    }
+
+    console.log(this.data)
   }
 
   computeLabelStats(coders) {
